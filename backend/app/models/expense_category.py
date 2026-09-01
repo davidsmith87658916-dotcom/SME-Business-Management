@@ -1,0 +1,20 @@
+from typing import Any
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, UniqueConstraint
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from app.database import Base
+
+class ExpenseCategory(Base):
+    __tablename__ = "expense_categories"
+    __table_args__ = (
+        UniqueConstraint("business_id", "name", name="uq_business_expense_category_name"),
+    )
+    
+    id: Any = Column(Integer, primary_key=True, index=True)
+    business_id: Any = Column(Integer, ForeignKey("businesses.id", ondelete="CASCADE"), nullable=False)
+    name: Any = Column(String(255), nullable=False)
+    created_at: Any = Column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Any = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    business: Any = relationship("Business", back_populates="expense_categories")
+    expenses: Any = relationship("Expense", back_populates="category")
