@@ -11,7 +11,10 @@ engine = create_engine(
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+class CustomBase:
+    __allow_unmapped__ = True
+
+Base = declarative_base(cls=CustomBase)
 
 # Dependency to get DB session
 def get_db():
